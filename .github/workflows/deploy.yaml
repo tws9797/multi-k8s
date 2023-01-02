@@ -15,7 +15,6 @@ jobs:
  
       - name: Test
         run: |-
-          echo "{{ secrets.DOCKER_USERNAME }}"
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t tws9797/react-test -f ./client/Dockerfile.dev ./client
           docker run -e CI=true tws9797/react-test npm test
@@ -40,25 +39,25 @@ jobs:
           cluster_name: multi-cluster
           location: asia-southeast1-a
  
-      # - name: Build
-      #   run: |-
-      #     docker build -t tws9797/multi-client-k8s-gh:latest -t tws9797/multi-client-k8s-gh:${{ env.SHA }} -f ./client/Dockerfile ./client
-      #     docker build -t tws9797/multi-server-k8s-pgfix-gh:latest -t tws9797/multi-server-k8s-pgfix-gh:${{ env.SHA }} -f ./server/Dockerfile ./server
-      #     docker build -t tws9797/multi-worker-k8s-gh:latest -t tws9797/multi-worker-k8s-gh:${{ env.SHA }} -f ./worker/Dockerfile ./worker
+      - name: Build
+        run: |-
+          docker build -t tws9797/multi-client-k8s-gh:latest -t tws9797/multi-client-k8s-gh:${{ env.SHA }} -f ./client/Dockerfile ./client
+          docker build -t tws9797/multi-server-k8s-pgfix-gh:latest -t tws9797/multi-server-k8s-pgfix-gh:${{ env.SHA }} -f ./server/Dockerfile ./server
+          docker build -t tws9797/multi-worker-k8s-gh:latest -t tws9797/multi-worker-k8s-gh:${{ env.SHA }} -f ./worker/Dockerfile ./worker
  
-      # - name: Push
-      #   run: |-
-      #     docker push tws9797/multi-client-k8s-gh:latest
-      #     docker push tws9797/multi-server-k8s-pgfix-gh:latest
-      #     docker push tws9797/multi-worker-k8s-gh:latest
+      - name: Push
+        run: |-
+          docker push tws9797/multi-client-k8s-gh:latest
+          docker push tws9797/multi-server-k8s-pgfix-gh:latest
+          docker push tws9797/multi-worker-k8s-gh:latest
  
-      #     docker push tws9797/multi-client-k8s-gh:${{ env.SHA }}
-      #     docker push tws9797/multi-server-k8s-pgfix-gh:${{ env.SHA }}
-      #     docker push tws9797/multi-worker-k8s-gh:${{ env.SHA }}
+          docker push tws9797/multi-client-k8s-gh:${{ env.SHA }}
+          docker push tws9797/multi-server-k8s-pgfix-gh:${{ env.SHA }}
+          docker push tws9797/multi-worker-k8s-gh:${{ env.SHA }}
  
-      # - name: Apply
-      #   run: |-
-      #     kubectl apply -f k8s
-      #     kubectl set image deployments/server-deployment server=tws9797/multi-server-k8s-pgfix-gh:${{ env.SHA }}
-      #     kubectl set image deployments/client-deployment client=tws9797/multi-client-k8s-gh:${{ env.SHA }}
-      #     kubectl set image deployments/worker-deployment worker=tws9797/multi-worker-k8s-gh:${{ env.SHA }}
+      - name: Apply
+        run: |-
+          kubectl apply -f k8s
+          kubectl set image deployments/server-deployment server=tws9797/multi-server-k8s-pgfix-gh:${{ env.SHA }}
+          kubectl set image deployments/client-deployment client=tws9797/multi-client-k8s-gh:${{ env.SHA }}
+          kubectl set image deployments/worker-deployment worker=tws9797/multi-worker-k8s-gh:${{ env.SHA }}
